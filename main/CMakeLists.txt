@@ -8,6 +8,7 @@ idf_component_register(
         "modules/drivers/adc_drv.c"
         "modules/drivers/gpio_drv.c"
         "modules/drivers/pwm_drv.c"
+        "modules/safety/safety.c"
         "modules/sensors/ntc_sensor.c"
     INCLUDE_DIRS
         ".")
