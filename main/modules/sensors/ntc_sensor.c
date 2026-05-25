@@ -24,7 +24,7 @@ static bool ntc_sensor_raw_is_valid(int raw_value)
 
 static esp_err_t ntc_sensor_validate_temperature(float temperature_c)
 {
-    if (isnanf(temperature_c) || isinff(temperature_c)) {
+    if (isnan(temperature_c) || isinf(temperature_c)) {
         return ESP_ERR_INVALID_RESPONSE;
     }
 
