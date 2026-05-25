@@ -21,7 +21,9 @@ esp_err_t safety_check_temperature(
         return ESP_ERR_INVALID_ARG;
     }
 
-    if (temperature_c < THERMAL_MIN_SAFE_TEMPERATURE_C) {
+    if (!sensor_valid) {
+        s_state = SAFETY_STATE_SENSOR_ERROR;
+    } else if (temperature_c < THERMAL_MIN_SAFE_TEMPERATURE_C) {
         s_state = SAFETY_STATE_UNDERTEMPERATURE;
     } else if (temperature_c > THERMAL_MAX_SAFE_TEMPERATURE_C) {
         s_state = SAFETY_STATE_OVERTEMPERATURE;
