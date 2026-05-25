@@ -2,6 +2,7 @@ idf_component_register(
     SRCS
         "main.c"
         "modules/app/app.c"
+        "modules/control/filter.c"
         "modules/drivers/adc_drv.c"
         "modules/drivers/gpio_drv.c"
         "modules/drivers/pwm_drv.c"
