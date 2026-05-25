@@ -118,6 +118,12 @@ esp_err_t thermal_execute_cycle(void)
         return ret;
     }
 
+    if (s_status.safety_state != SAFETY_STATE_OK) {
+        s_status.duty_percent = 0.0f;
+        (void)thermal_control_reset();
+        return pwm_drv_set_duty(0.0f);
+    }
+
     if (s_status.safety_state == SAFETY_STATE_OK) {
         ret = thermal_control_update(
             s_status.setpoint_c,
