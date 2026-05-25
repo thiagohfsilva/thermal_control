@@ -7,12 +7,19 @@
 
 #include "esp_err.h"
 
+#include <stdbool.h>
 #include <math.h>
 
 static float ntc_sensor_raw_to_voltage(int raw_value)
 {
     return ((float)raw_value / THERMAL_NTC_ADC_MAX_RAW) *
            THERMAL_NTC_ADC_REFERENCE_VOLTAGE;
+}
+
+static bool ntc_sensor_raw_is_valid(int raw_value)
+{
+    return raw_value > 0 &&
+           (float)raw_value < THERMAL_NTC_ADC_MAX_RAW;
 }
 
 static esp_err_t ntc_sensor_voltage_to_resistance(
@@ -75,6 +82,10 @@ esp_err_t ntc_sensor_read_temperature(float *temperature_c)
     esp_err_t ret = adc_drv_read_raw(&raw_value);
     if (ret != ESP_OK) {
         return ret;
+    }
+
+    if (!ntc_sensor_raw_is_valid(raw_value)) {
+        return ESP_ERR_INVALID_RESPONSE;
     }
 
     const float voltage = ntc_sensor_raw_to_voltage(raw_value);
