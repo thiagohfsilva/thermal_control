@@ -10,5 +10,11 @@ esp_err_t app_init(void)
         return ret;
     }
 
-    return thermal_init();
+    ret = thermal_init();
+    if (ret != ESP_OK) {
+        (void)app_state_machine_set_state(APP_STATE_FAULT);
+        return ret;
+    }
+
+    return app_state_machine_set_state(APP_STATE_RUNNING);
 }
