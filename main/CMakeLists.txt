@@ -10,5 +10,7 @@ idf_component_register(
         "modules/drivers/pwm_drv.c"
         "modules/safety/safety.c"
         "modules/sensors/ntc_sensor.c"
+        "modules/thermal/thermal.c"
+        "modules/thermal/thermal_task.c"
     INCLUDE_DIRS
         ".")
