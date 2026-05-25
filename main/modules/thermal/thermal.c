@@ -128,6 +128,11 @@ esp_err_t thermal_execute_cycle(void)
         if (ret != ESP_OK) {
             return ret;
         }
+
+        ret = pwm_drv_set_duty(s_status.duty_percent);
+        if (ret != ESP_OK) {
+            return ret;
+        }
     }
 
     return ESP_OK;
