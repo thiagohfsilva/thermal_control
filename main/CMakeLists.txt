@@ -3,6 +3,7 @@ idf_component_register(
         "main.c"
         "modules/app/app.c"
         "modules/drivers/adc_drv.c"
+        "modules/drivers/gpio_drv.c"
         "modules/drivers/pwm_drv.c"
     INCLUDE_DIRS
         ".")
