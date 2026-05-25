@@ -16,3 +16,13 @@ typedef enum {
     SAFETY_STATE_OVERTEMPERATURE,
     SAFETY_STATE_UNDERTEMPERATURE,
 } safety_state_t;
+
+typedef struct {
+    float temperature_c;
+    float filtered_temperature_c;
+    float setpoint_c;
+    float duty_percent;
+    app_state_t app_state;
+    safety_state_t safety_state;
+    bool sensor_valid;
+} thermal_status_t;
