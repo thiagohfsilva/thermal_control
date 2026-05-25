@@ -22,6 +22,15 @@ esp_err_t app_state_machine_get_state(app_state_t *state)
 
 esp_err_t app_state_machine_set_state(app_state_t state)
 {
+    if (s_app_state == APP_STATE_SHUTDOWN) {
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    if (s_app_state == APP_STATE_FAULT &&
+        state == APP_STATE_RUNNING) {
+        return ESP_ERR_INVALID_STATE;
+    }
+
     s_app_state = state;
     return ESP_OK;
 }
