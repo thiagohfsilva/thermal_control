@@ -1,8 +1,15 @@
 #include "ntc_sensor.h"
 
+#include "modules/common/config.h"
 #include "modules/drivers/adc_drv.h"
 
 #include "esp_err.h"
+
+static float ntc_sensor_raw_to_voltage(int raw_value)
+{
+    return ((float)raw_value / THERMAL_NTC_ADC_MAX_RAW) *
+           THERMAL_NTC_ADC_REFERENCE_VOLTAGE;
+}
 
 esp_err_t ntc_sensor_init(void)
 {
