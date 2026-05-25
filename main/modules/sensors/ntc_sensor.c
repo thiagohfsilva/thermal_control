@@ -11,6 +11,25 @@ static float ntc_sensor_raw_to_voltage(int raw_value)
            THERMAL_NTC_ADC_REFERENCE_VOLTAGE;
 }
 
+static esp_err_t ntc_sensor_voltage_to_resistance(
+    float voltage, float *resistance_ohm)
+{
+    if (resistance_ohm == NULL) {
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    if (voltage <= 0.0f ||
+        voltage >= THERMAL_NTC_ADC_REFERENCE_VOLTAGE) {
+        return ESP_ERR_INVALID_RESPONSE;
+    }
+
+    *resistance_ohm =
+        (THERMAL_NTC_SERIES_RESISTOR_OHM * voltage) /
+        (THERMAL_NTC_ADC_REFERENCE_VOLTAGE - voltage);
+
+    return ESP_OK;
+}
+
 esp_err_t ntc_sensor_init(void)
 {
     return adc_drv_init();
