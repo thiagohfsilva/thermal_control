@@ -21,7 +21,16 @@ esp_err_t filter_update(filter_t *filter, float sample, float *filtered_value)
         return ESP_ERR_INVALID_ARG;
     }
 
-    *filtered_value = sample;
+    if (!filter->initialized) {
+        filter->value = sample;
+        filter->initialized = true;
+    } else {
+        filter->value =
+            (filter->alpha * sample) +
+            ((1.0f - filter->alpha) * filter->value);
+    }
+
+    *filtered_value = filter->value;
     return ESP_OK;
 }
 
