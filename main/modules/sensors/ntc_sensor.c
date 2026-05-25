@@ -22,6 +22,20 @@ static bool ntc_sensor_raw_is_valid(int raw_value)
            (float)raw_value < THERMAL_NTC_ADC_MAX_RAW;
 }
 
+static esp_err_t ntc_sensor_validate_temperature(float temperature_c)
+{
+    if (isnanf(temperature_c) || isinff(temperature_c)) {
+        return ESP_ERR_INVALID_RESPONSE;
+    }
+
+    if (temperature_c < THERMAL_MIN_SAFE_TEMPERATURE_C ||
+        temperature_c > THERMAL_MAX_SAFE_TEMPERATURE_C) {
+        return ESP_ERR_INVALID_RESPONSE;
+    }
+
+    return ESP_OK;
+}
+
 static esp_err_t ntc_sensor_voltage_to_resistance(
     float voltage, float *resistance_ohm)
 {
@@ -96,6 +110,11 @@ esp_err_t ntc_sensor_read_temperature(float *temperature_c)
         return ret;
     }
 
-    return ntc_sensor_resistance_to_temperature(
+    ret = ntc_sensor_resistance_to_temperature(
         resistance_ohm, temperature_c);
+    if (ret != ESP_OK) {
+        return ret;
+    }
+
+    return ntc_sensor_validate_temperature(*temperature_c);
 }
