@@ -47,6 +47,30 @@ esp_err_t pid_update(
         return ESP_ERR_INVALID_ARG;
     }
 
-    *output = 0.0f;
-    return ESP_ERR_NOT_SUPPORTED;
+    const float error = setpoint - measurement;
+    pid->integral += error * period_s;
+
+    float derivative = 0.0f;
+    if (pid->has_previous_error) {
+        derivative = (error - pid->previous_error) / period_s;
+    }
+
+    float calculated_output =
+        (pid->kp * error) +
+        (pid->ki * pid->integral) +
+        (pid->kd * derivative);
+
+    if (calculated_output < pid->output_min) {
+        calculated_output = pid->output_min;
+    }
+
+    if (calculated_output > pid->output_max) {
+        calculated_output = pid->output_max;
+    }
+
+    pid->previous_error = error;
+    pid->has_previous_error = true;
+    *output = calculated_output;
+
+    return ESP_OK;
 }
