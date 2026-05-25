@@ -1,10 +1,12 @@
 #include "ntc_sensor.h"
 
+#include "modules/drivers/adc_drv.h"
+
 #include "esp_err.h"
 
 esp_err_t ntc_sensor_init(void)
 {
-    return ESP_ERR_NOT_SUPPORTED;
+    return adc_drv_init();
 }
 
 esp_err_t ntc_sensor_read_temperature(float *temperature_c)
