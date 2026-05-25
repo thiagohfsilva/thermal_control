@@ -1,6 +1,7 @@
 #include "thermal.h"
 
 #include "modules/common/config.h"
+#include "modules/common/defines.h"
 #include "modules/control/filter.h"
 #include "modules/control/thermal_control.h"
 #include "modules/drivers/gpio_drv.h"
@@ -115,6 +116,18 @@ esp_err_t thermal_execute_cycle(void)
         &s_status.safety_state);
     if (ret != ESP_OK) {
         return ret;
+    }
+
+    if (s_status.safety_state == SAFETY_STATE_OK) {
+        ret = thermal_control_update(
+            s_status.setpoint_c,
+            s_status.filtered_temperature_c,
+            (float)THERMAL_CONTROL_PERIOD_MS *
+                THERMAL_SECONDS_PER_MILLISECOND,
+            &s_status.duty_percent);
+        if (ret != ESP_OK) {
+            return ret;
+        }
     }
 
     return ESP_OK;
