@@ -126,3 +126,9 @@ void test_safety_detects_invalid_sensor(void)
         ESP_OK, safety_check_temperature(25.0f, false, &state));
     TEST_ASSERT_EQUAL(SAFETY_STATE_SENSOR_ERROR, state);
 }
+
+void test_thermal_rejects_setpoint_outside_limits(void)
+{
+    TEST_ASSERT_EQUAL(ESP_ERR_INVALID_ARG, thermal_set_setpoint(-100.0f));
+    TEST_ASSERT_EQUAL(ESP_ERR_INVALID_ARG, thermal_set_setpoint(200.0f));
+}
