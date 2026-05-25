@@ -48,7 +48,7 @@ esp_err_t pid_update(
     }
 
     const float error = setpoint - measurement;
-    pid->integral += error * period_s;
+    const float candidate_integral = pid->integral + (error * period_s);
 
     float derivative = 0.0f;
     if (pid->has_previous_error) {
@@ -57,15 +57,15 @@ esp_err_t pid_update(
 
     float calculated_output =
         (pid->kp * error) +
-        (pid->ki * pid->integral) +
+        (pid->ki * candidate_integral) +
         (pid->kd * derivative);
 
     if (calculated_output < pid->output_min) {
         calculated_output = pid->output_min;
-    }
-
-    if (calculated_output > pid->output_max) {
+    } else if (calculated_output > pid->output_max) {
         calculated_output = pid->output_max;
+    } else {
+        pid->integral = candidate_integral;
     }
 
     pid->previous_error = error;
