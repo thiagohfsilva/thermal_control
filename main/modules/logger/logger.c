@@ -12,6 +12,11 @@ esp_err_t logger_init(void)
         return ESP_OK;
     }
 
+    esp_err_t ret = logger_task_start();
+    if (ret != ESP_OK) {
+        return ret;
+    }
+
     s_initialized = true;
     return ESP_OK;
 }
