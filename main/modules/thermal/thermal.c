@@ -26,7 +26,42 @@ static bool s_initialized;
 
 esp_err_t thermal_init(void)
 {
-    return ESP_ERR_NOT_SUPPORTED;
+    if (s_initialized) {
+        return ESP_OK;
+    }
+
+    esp_err_t ret = gpio_drv_init();
+    if (ret != ESP_OK) {
+        return ret;
+    }
+
+    ret = pwm_drv_init();
+    if (ret != ESP_OK) {
+        return ret;
+    }
+
+    ret = ntc_sensor_init();
+    if (ret != ESP_OK) {
+        return ret;
+    }
+
+    ret = filter_init(&s_temperature_filter, 0.2f);
+    if (ret != ESP_OK) {
+        return ret;
+    }
+
+    ret = thermal_control_init();
+    if (ret != ESP_OK) {
+        return ret;
+    }
+
+    ret = safety_init();
+    if (ret != ESP_OK) {
+        return ret;
+    }
+
+    s_initialized = true;
+    return ESP_OK;
 }
 
 esp_err_t thermal_get_status(thermal_status_t *status)
