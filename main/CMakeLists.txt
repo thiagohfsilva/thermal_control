@@ -10,6 +10,7 @@ idf_component_register(
         "modules/drivers/gpio_drv.c"
         "modules/drivers/pwm_drv.c"
         "modules/logger/logger.c"
+        "modules/logger/logger_task.c"
         "modules/safety/safety.c"
         "modules/sensors/ntc_sensor.c"
         "modules/thermal/thermal.c"
