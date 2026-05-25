@@ -6,7 +6,7 @@
 #include "main/modules/sensors/ntc_sensor.h"
 #include "main/modules/thermal/thermal.h"
 
-void test_pid_initializes_and_updates_output(void)
+static void test_pid_initializes_and_updates_output(void)
 {
     pid_controller_t pid;
     float output = 0.0f;
@@ -18,7 +18,7 @@ void test_pid_initializes_and_updates_output(void)
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 10.0f, output);
 }
 
-void test_pid_saturates_output_limits(void)
+static void test_pid_saturates_output_limits(void)
 {
     pid_controller_t pid;
     float output = 0.0f;
@@ -34,7 +34,7 @@ void test_pid_saturates_output_limits(void)
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0f, output);
 }
 
-void test_pid_anti_windup_recovers_after_saturation(void)
+static void test_pid_anti_windup_recovers_after_saturation(void)
 {
     pid_controller_t pid;
     float output = 0.0f;
@@ -52,7 +52,7 @@ void test_pid_anti_windup_recovers_after_saturation(void)
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0f, output);
 }
 
-void test_filter_smooths_temperature_sample(void)
+static void test_filter_smooths_temperature_sample(void)
 {
     filter_t filter;
     float filtered = 0.0f;
@@ -64,7 +64,7 @@ void test_filter_smooths_temperature_sample(void)
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 15.0f, filtered);
 }
 
-void test_filter_reset_sets_known_value(void)
+static void test_filter_reset_sets_known_value(void)
 {
     filter_t filter;
     float filtered = 0.0f;
@@ -76,7 +76,7 @@ void test_filter_reset_sets_known_value(void)
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 25.0f, filtered);
 }
 
-void test_ntc_nominal_resistance_converts_to_25c(void)
+static void test_ntc_nominal_resistance_converts_to_25c(void)
 {
     float temperature_c = 0.0f;
 
@@ -85,7 +85,7 @@ void test_ntc_nominal_resistance_converts_to_25c(void)
     TEST_ASSERT_FLOAT_WITHIN(0.1f, 25.0f, temperature_c);
 }
 
-void test_ntc_rejects_invalid_raw_readings(void)
+static void test_ntc_rejects_invalid_raw_readings(void)
 {
     float temperature_c = 0.0f;
 
@@ -97,7 +97,7 @@ void test_ntc_rejects_invalid_raw_readings(void)
         ntc_sensor_convert_raw(4095, &temperature_c));
 }
 
-void test_safety_accepts_temperature_inside_limits(void)
+static void test_safety_accepts_temperature_inside_limits(void)
 {
     safety_state_t state = SAFETY_STATE_SENSOR_ERROR;
 
@@ -107,7 +107,7 @@ void test_safety_accepts_temperature_inside_limits(void)
     TEST_ASSERT_EQUAL(SAFETY_STATE_OK, state);
 }
 
-void test_safety_detects_overtemperature(void)
+static void test_safety_detects_overtemperature(void)
 {
     safety_state_t state = SAFETY_STATE_OK;
 
@@ -117,7 +117,7 @@ void test_safety_detects_overtemperature(void)
     TEST_ASSERT_EQUAL(SAFETY_STATE_OVERTEMPERATURE, state);
 }
 
-void test_safety_detects_invalid_sensor(void)
+static void test_safety_detects_invalid_sensor(void)
 {
     safety_state_t state = SAFETY_STATE_OK;
 
@@ -127,7 +127,7 @@ void test_safety_detects_invalid_sensor(void)
     TEST_ASSERT_EQUAL(SAFETY_STATE_SENSOR_ERROR, state);
 }
 
-void test_thermal_rejects_setpoint_outside_limits(void)
+static void test_thermal_rejects_setpoint_outside_limits(void)
 {
     TEST_ASSERT_EQUAL(ESP_ERR_INVALID_ARG, thermal_set_setpoint(-100.0f));
     TEST_ASSERT_EQUAL(ESP_ERR_INVALID_ARG, thermal_set_setpoint(200.0f));
