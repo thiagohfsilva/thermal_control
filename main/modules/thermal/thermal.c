@@ -92,5 +92,14 @@ esp_err_t thermal_set_setpoint(float setpoint_c)
 
 esp_err_t thermal_execute_cycle(void)
 {
-    return ESP_ERR_NOT_SUPPORTED;
+    float temperature_c = 0.0f;
+    esp_err_t ret = ntc_sensor_read_temperature(&temperature_c);
+    const bool sensor_valid = ret == ESP_OK;
+
+    s_status.sensor_valid = sensor_valid;
+    if (sensor_valid) {
+        s_status.temperature_c = temperature_c;
+    }
+
+    return ESP_OK;
 }
