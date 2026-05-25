@@ -1,6 +1,7 @@
 #include "pwm_drv.h"
 
 #include "modules/common/config.h"
+#include "modules/common/defines.h"
 
 #include "driver/ledc.h"
 #include "esp_err.h"
@@ -40,6 +41,14 @@ esp_err_t pwm_drv_init(void)
 
 esp_err_t pwm_drv_set_duty(float duty_percent)
 {
+    if (duty_percent < THERMAL_PERCENT_MIN) {
+        duty_percent = THERMAL_PERCENT_MIN;
+    }
+
+    if (duty_percent > THERMAL_PERCENT_MAX) {
+        duty_percent = THERMAL_PERCENT_MAX;
+    }
+
     const uint32_t max_duty = (1U << THERMAL_PWM_DUTY_RES) - 1U;
     const uint32_t duty = (uint32_t)((duty_percent / 100.0f) * max_duty);
 
