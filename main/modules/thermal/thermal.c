@@ -99,6 +99,14 @@ esp_err_t thermal_execute_cycle(void)
     s_status.sensor_valid = sensor_valid;
     if (sensor_valid) {
         s_status.temperature_c = temperature_c;
+
+        ret = filter_update(
+            &s_temperature_filter,
+            temperature_c,
+            &s_status.filtered_temperature_c);
+        if (ret != ESP_OK) {
+            return ret;
+        }
     }
 
     return ESP_OK;
