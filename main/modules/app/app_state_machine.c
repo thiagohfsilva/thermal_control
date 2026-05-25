@@ -26,8 +26,7 @@ esp_err_t app_state_machine_set_state(app_state_t state)
         return ESP_ERR_INVALID_STATE;
     }
 
-    if (s_app_state == APP_STATE_FAULT &&
-        state == APP_STATE_RUNNING) {
+    if (s_app_state == APP_STATE_FAULT && state == APP_STATE_RUNNING) {
         return ESP_ERR_INVALID_STATE;
     }
 

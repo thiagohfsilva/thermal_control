@@ -18,8 +18,7 @@ static float ntc_sensor_raw_to_voltage(int raw_value)
 
 static bool ntc_sensor_raw_is_valid(int raw_value)
 {
-    return raw_value > 0 &&
-           (float)raw_value < THERMAL_NTC_ADC_MAX_RAW;
+    return raw_value > 0 && (float)raw_value < THERMAL_NTC_ADC_MAX_RAW;
 }
 
 static esp_err_t ntc_sensor_validate_temperature(float temperature_c)
@@ -36,27 +35,25 @@ static esp_err_t ntc_sensor_validate_temperature(float temperature_c)
     return ESP_OK;
 }
 
-static esp_err_t ntc_sensor_voltage_to_resistance(
-    float voltage, float *resistance_ohm)
+static esp_err_t ntc_sensor_voltage_to_resistance(float voltage,
+                                                  float *resistance_ohm)
 {
     if (resistance_ohm == NULL) {
         return ESP_ERR_INVALID_ARG;
     }
 
-    if (voltage <= 0.0f ||
-        voltage >= THERMAL_NTC_ADC_REFERENCE_VOLTAGE) {
+    if (voltage <= 0.0f || voltage >= THERMAL_NTC_ADC_REFERENCE_VOLTAGE) {
         return ESP_ERR_INVALID_RESPONSE;
     }
 
-    *resistance_ohm =
-        (THERMAL_NTC_SERIES_RESISTOR_OHM * voltage) /
-        (THERMAL_NTC_ADC_REFERENCE_VOLTAGE - voltage);
+    *resistance_ohm = (THERMAL_NTC_SERIES_RESISTOR_OHM * voltage) /
+                      (THERMAL_NTC_ADC_REFERENCE_VOLTAGE - voltage);
 
     return ESP_OK;
 }
 
-static esp_err_t ntc_sensor_resistance_to_temperature(
-    float resistance_ohm, float *temperature_c)
+static esp_err_t ntc_sensor_resistance_to_temperature(float resistance_ohm,
+                                                      float *temperature_c)
 {
     if (temperature_c == NULL) {
         return ESP_ERR_INVALID_ARG;
@@ -67,25 +64,22 @@ static esp_err_t ntc_sensor_resistance_to_temperature(
     }
 
     const float nominal_temperature_k =
-        THERMAL_NTC_NOMINAL_TEMPERATURE_C +
-        THERMAL_CELSIUS_TO_KELVIN_OFFSET;
+        THERMAL_NTC_NOMINAL_TEMPERATURE_C + THERMAL_CELSIUS_TO_KELVIN_OFFSET;
     const float inverse_temperature_k =
         (1.0f / nominal_temperature_k) +
         (logf(resistance_ohm / THERMAL_NTC_NOMINAL_RESISTANCE_OHM) /
          THERMAL_NTC_BETA_COEFFICIENT);
 
     *temperature_c =
-        (1.0f / inverse_temperature_k) -
-        THERMAL_CELSIUS_TO_KELVIN_OFFSET;
+        (1.0f / inverse_temperature_k) - THERMAL_CELSIUS_TO_KELVIN_OFFSET;
 
     return ESP_OK;
 }
 
-esp_err_t ntc_sensor_convert_resistance(
-    float resistance_ohm, float *temperature_c)
+esp_err_t ntc_sensor_convert_resistance(float resistance_ohm,
+                                        float *temperature_c)
 {
-    return ntc_sensor_resistance_to_temperature(
-        resistance_ohm, temperature_c);
+    return ntc_sensor_resistance_to_temperature(resistance_ohm, temperature_c);
 }
 
 esp_err_t ntc_sensor_convert_raw(int raw_value, float *temperature_c)
@@ -101,14 +95,12 @@ esp_err_t ntc_sensor_convert_raw(int raw_value, float *temperature_c)
     const float voltage = ntc_sensor_raw_to_voltage(raw_value);
     float resistance_ohm = 0.0f;
 
-    esp_err_t ret =
-        ntc_sensor_voltage_to_resistance(voltage, &resistance_ohm);
+    esp_err_t ret = ntc_sensor_voltage_to_resistance(voltage, &resistance_ohm);
     if (ret != ESP_OK) {
         return ret;
     }
 
-    ret = ntc_sensor_resistance_to_temperature(
-        resistance_ohm, temperature_c);
+    ret = ntc_sensor_resistance_to_temperature(resistance_ohm, temperature_c);
     if (ret != ESP_OK) {
         return ret;
     }

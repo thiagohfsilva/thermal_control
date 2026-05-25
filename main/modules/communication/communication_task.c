@@ -20,13 +20,9 @@ static void communication_task(void *arg)
 
 esp_err_t communication_task_start(void)
 {
-    BaseType_t result = xTaskCreate(
-        communication_task,
-        "communication",
-        COMMUNICATION_TASK_STACK_SIZE,
-        NULL,
-        COMMUNICATION_TASK_PRIORITY,
-        NULL);
+    BaseType_t result = xTaskCreate(communication_task, "communication",
+                                    COMMUNICATION_TASK_STACK_SIZE, NULL,
+                                    COMMUNICATION_TASK_PRIORITY, NULL);
 
     return result == pdPASS ? ESP_OK : ESP_ERR_NO_MEM;
 }

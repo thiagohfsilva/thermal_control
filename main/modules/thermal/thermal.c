@@ -101,19 +101,15 @@ esp_err_t thermal_execute_cycle(void)
     if (sensor_valid) {
         s_status.temperature_c = temperature_c;
 
-        ret = filter_update(
-            &s_temperature_filter,
-            temperature_c,
-            &s_status.filtered_temperature_c);
+        ret = filter_update(&s_temperature_filter, temperature_c,
+                            &s_status.filtered_temperature_c);
         if (ret != ESP_OK) {
             return ret;
         }
     }
 
-    ret = safety_check_temperature(
-        s_status.filtered_temperature_c,
-        sensor_valid,
-        &s_status.safety_state);
+    ret = safety_check_temperature(s_status.filtered_temperature_c,
+                                   sensor_valid, &s_status.safety_state);
     if (ret != ESP_OK) {
         return ret;
     }
@@ -126,10 +122,8 @@ esp_err_t thermal_execute_cycle(void)
 
     if (s_status.safety_state == SAFETY_STATE_OK) {
         ret = thermal_control_update(
-            s_status.setpoint_c,
-            s_status.filtered_temperature_c,
-            (float)THERMAL_CONTROL_PERIOD_MS *
-                THERMAL_SECONDS_PER_MILLISECOND,
+            s_status.setpoint_c, s_status.filtered_temperature_c,
+            (float)THERMAL_CONTROL_PERIOD_MS * THERMAL_SECONDS_PER_MILLISECOND,
             &s_status.duty_percent);
         if (ret != ESP_OK) {
             return ret;

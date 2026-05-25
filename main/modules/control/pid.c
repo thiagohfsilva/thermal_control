@@ -2,13 +2,8 @@
 
 #include "esp_err.h"
 
-esp_err_t pid_init(
-    pid_controller_t *pid,
-    float kp,
-    float ki,
-    float kd,
-    float output_min,
-    float output_max)
+esp_err_t pid_init(pid_controller_t *pid, float kp, float ki, float kd,
+                   float output_min, float output_max)
 {
     if (pid == NULL || output_max < output_min) {
         return ESP_ERR_INVALID_ARG;
@@ -36,12 +31,8 @@ esp_err_t pid_reset(pid_controller_t *pid)
     return ESP_OK;
 }
 
-esp_err_t pid_update(
-    pid_controller_t *pid,
-    float setpoint,
-    float measurement,
-    float period_s,
-    float *output)
+esp_err_t pid_update(pid_controller_t *pid, float setpoint, float measurement,
+                     float period_s, float *output)
 {
     if (pid == NULL || output == NULL || period_s <= 0.0f) {
         return ESP_ERR_INVALID_ARG;
@@ -55,10 +46,9 @@ esp_err_t pid_update(
         derivative = (error - pid->previous_error) / period_s;
     }
 
-    float calculated_output =
-        (pid->kp * error) +
-        (pid->ki * candidate_integral) +
-        (pid->kd * derivative);
+    float calculated_output = (pid->kp * error) +
+                              (pid->ki * candidate_integral) +
+                              (pid->kd * derivative);
 
     if (calculated_output < pid->output_min) {
         calculated_output = pid->output_min;

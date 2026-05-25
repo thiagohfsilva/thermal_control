@@ -26,8 +26,7 @@ esp_err_t filter_update(filter_t *filter, float sample, float *filtered_value)
         filter->initialized = true;
     } else {
         filter->value =
-            (filter->alpha * sample) +
-            ((1.0f - filter->alpha) * filter->value);
+            (filter->alpha * sample) + ((1.0f - filter->alpha) * filter->value);
     }
 
     *filtered_value = filter->value;

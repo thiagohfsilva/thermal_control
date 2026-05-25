@@ -30,8 +30,8 @@ esp_err_t adc_drv_init(void)
         .bitwidth = THERMAL_NTC_ADC_BITWIDTH,
     };
 
-    ret = adc_oneshot_config_channel(
-        s_adc_handle, THERMAL_NTC_ADC_CHANNEL, &channel_config);
+    ret = adc_oneshot_config_channel(s_adc_handle, THERMAL_NTC_ADC_CHANNEL,
+                                     &channel_config);
     if (ret != ESP_OK) {
         return ret;
     }
@@ -51,8 +51,7 @@ esp_err_t adc_drv_read_raw(int *raw_value)
         return ret;
     }
 
-    ret = adc_oneshot_read(
-        s_adc_handle, THERMAL_NTC_ADC_CHANNEL, raw_value);
+    ret = adc_oneshot_read(s_adc_handle, THERMAL_NTC_ADC_CHANNEL, raw_value);
     if (ret != ESP_OK) {
         *raw_value = 0;
         return ret;

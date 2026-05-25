@@ -15,17 +15,8 @@ typedef struct {
     bool has_previous_error;
 } pid_controller_t;
 
-esp_err_t pid_init(
-    pid_controller_t *pid,
-    float kp,
-    float ki,
-    float kd,
-    float output_min,
-    float output_max);
+esp_err_t pid_init(pid_controller_t *pid, float kp, float ki, float kd,
+                   float output_min, float output_max);
 esp_err_t pid_reset(pid_controller_t *pid);
-esp_err_t pid_update(
-    pid_controller_t *pid,
-    float setpoint,
-    float measurement,
-    float period_s,
-    float *output);
+esp_err_t pid_update(pid_controller_t *pid, float setpoint, float measurement,
+                     float period_s, float *output);
