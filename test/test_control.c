@@ -82,3 +82,15 @@ void test_ntc_nominal_resistance_converts_to_25c(void)
         ESP_OK, ntc_sensor_convert_resistance(10000.0f, &temperature_c));
     TEST_ASSERT_FLOAT_WITHIN(0.1f, 25.0f, temperature_c);
 }
+
+void test_ntc_rejects_invalid_raw_readings(void)
+{
+    float temperature_c = 0.0f;
+
+    TEST_ASSERT_EQUAL(
+        ESP_ERR_INVALID_RESPONSE,
+        ntc_sensor_convert_raw(0, &temperature_c));
+    TEST_ASSERT_EQUAL(
+        ESP_ERR_INVALID_RESPONSE,
+        ntc_sensor_convert_raw(4095, &temperature_c));
+}
