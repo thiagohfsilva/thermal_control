@@ -1,5 +1,7 @@
 #include "communication.h"
 
+#include "modules/thermal/thermal.h"
+
 #include "esp_err.h"
 
 #include <stdbool.h>
@@ -12,18 +14,21 @@ esp_err_t communication_init(void)
         return ESP_OK;
     }
 
+    esp_err_t ret = communication_task_start();
+    if (ret != ESP_OK) {
+        return ret;
+    }
+
     s_initialized = true;
     return ESP_OK;
 }
 
 esp_err_t communication_get_status(thermal_status_t *status)
 {
-    (void)status;
-    return ESP_ERR_NOT_SUPPORTED;
+    return thermal_get_status(status);
 }
 
 esp_err_t communication_set_setpoint(float setpoint_c)
 {
-    (void)setpoint_c;
-    return ESP_ERR_NOT_SUPPORTED;
+    return thermal_set_setpoint(setpoint_c);
 }
