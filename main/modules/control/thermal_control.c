@@ -33,6 +33,19 @@ esp_err_t thermal_control_update(
         return ESP_ERR_INVALID_ARG;
     }
 
-    return pid_update(
+    esp_err_t ret = pid_update(
         &s_pid, setpoint_c, temperature_c, period_s, duty_percent);
+    if (ret != ESP_OK) {
+        return ret;
+    }
+
+    if (*duty_percent < THERMAL_PERCENT_MIN) {
+        *duty_percent = THERMAL_PERCENT_MIN;
+    }
+
+    if (*duty_percent > THERMAL_PERCENT_MAX) {
+        *duty_percent = THERMAL_PERCENT_MAX;
+    }
+
+    return ESP_OK;
 }
