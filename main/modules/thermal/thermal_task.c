@@ -12,10 +12,12 @@
 static void thermal_task(void *arg)
 {
     (void)arg;
+    TickType_t last_wake_time = xTaskGetTickCount();
 
     while (true) {
         (void)thermal_execute_cycle();
-        vTaskDelay(pdMS_TO_TICKS(THERMAL_CONTROL_PERIOD_MS));
+        vTaskDelayUntil(
+            &last_wake_time, pdMS_TO_TICKS(THERMAL_CONTROL_PERIOD_MS));
     }
 }
 
