@@ -2,6 +2,7 @@
 
 #include "main/modules/control/filter.h"
 #include "main/modules/control/pid.h"
+#include "main/modules/sensors/ntc_sensor.h"
 
 void test_pid_initializes_and_updates_output(void)
 {
@@ -71,4 +72,13 @@ void test_filter_reset_sets_known_value(void)
     TEST_ASSERT_EQUAL(ESP_OK, filter_reset(&filter, 25.0f));
     TEST_ASSERT_EQUAL(ESP_OK, filter_update(&filter, 25.0f, &filtered));
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 25.0f, filtered);
+}
+
+void test_ntc_nominal_resistance_converts_to_25c(void)
+{
+    float temperature_c = 0.0f;
+
+    TEST_ASSERT_EQUAL(
+        ESP_OK, ntc_sensor_convert_resistance(10000.0f, &temperature_c));
+    TEST_ASSERT_FLOAT_WITHIN(0.1f, 25.0f, temperature_c);
 }

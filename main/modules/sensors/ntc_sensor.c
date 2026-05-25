@@ -81,6 +81,41 @@ static esp_err_t ntc_sensor_resistance_to_temperature(
     return ESP_OK;
 }
 
+esp_err_t ntc_sensor_convert_resistance(
+    float resistance_ohm, float *temperature_c)
+{
+    return ntc_sensor_resistance_to_temperature(
+        resistance_ohm, temperature_c);
+}
+
+esp_err_t ntc_sensor_convert_raw(int raw_value, float *temperature_c)
+{
+    if (temperature_c == NULL) {
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    if (!ntc_sensor_raw_is_valid(raw_value)) {
+        return ESP_ERR_INVALID_RESPONSE;
+    }
+
+    const float voltage = ntc_sensor_raw_to_voltage(raw_value);
+    float resistance_ohm = 0.0f;
+
+    esp_err_t ret =
+        ntc_sensor_voltage_to_resistance(voltage, &resistance_ohm);
+    if (ret != ESP_OK) {
+        return ret;
+    }
+
+    ret = ntc_sensor_resistance_to_temperature(
+        resistance_ohm, temperature_c);
+    if (ret != ESP_OK) {
+        return ret;
+    }
+
+    return ntc_sensor_validate_temperature(*temperature_c);
+}
+
 esp_err_t ntc_sensor_init(void)
 {
     return adc_drv_init();
@@ -102,19 +137,5 @@ esp_err_t ntc_sensor_read_temperature(float *temperature_c)
         return ESP_ERR_INVALID_RESPONSE;
     }
 
-    const float voltage = ntc_sensor_raw_to_voltage(raw_value);
-    float resistance_ohm = 0.0f;
-
-    ret = ntc_sensor_voltage_to_resistance(voltage, &resistance_ohm);
-    if (ret != ESP_OK) {
-        return ret;
-    }
-
-    ret = ntc_sensor_resistance_to_temperature(
-        resistance_ohm, temperature_c);
-    if (ret != ESP_OK) {
-        return ret;
-    }
-
-    return ntc_sensor_validate_temperature(*temperature_c);
+    return ntc_sensor_convert_raw(raw_value, temperature_c);
 }
