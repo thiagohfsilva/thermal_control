@@ -4,6 +4,7 @@ idf_component_register(
         "modules/app/app.c"
         "modules/control/filter.c"
         "modules/control/pid.c"
+        "modules/control/thermal_control.c"
         "modules/drivers/adc_drv.c"
         "modules/drivers/gpio_drv.c"
         "modules/drivers/pwm_drv.c"
