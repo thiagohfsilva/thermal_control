@@ -60,6 +60,11 @@ esp_err_t thermal_init(void)
         return ret;
     }
 
+    ret = thermal_task_start();
+    if (ret != ESP_OK) {
+        return ret;
+    }
+
     s_initialized = true;
     return ESP_OK;
 }

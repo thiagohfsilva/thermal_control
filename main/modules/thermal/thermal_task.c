@@ -21,5 +21,13 @@ static void thermal_task(void *arg)
 
 esp_err_t thermal_task_start(void)
 {
-    return ESP_ERR_NOT_SUPPORTED;
+    BaseType_t result = xTaskCreate(
+        thermal_task,
+        "thermal",
+        THERMAL_TASK_STACK_SIZE,
+        NULL,
+        THERMAL_TASK_PRIORITY,
+        NULL);
+
+    return result == pdPASS ? ESP_OK : ESP_ERR_NO_MEM;
 }
