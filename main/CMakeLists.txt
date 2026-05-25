@@ -4,6 +4,7 @@ idf_component_register(
         "modules/app/app.c"
         "modules/app/app_state_machine.c"
         "modules/communication/communication.c"
+        "modules/communication/communication_task.c"
         "modules/control/filter.c"
         "modules/control/pid.c"
         "modules/control/thermal_control.c"
