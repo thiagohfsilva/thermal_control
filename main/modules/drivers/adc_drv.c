@@ -51,6 +51,12 @@ esp_err_t adc_drv_read_raw(int *raw_value)
         return ret;
     }
 
-    return adc_oneshot_read(
+    ret = adc_oneshot_read(
         s_adc_handle, THERMAL_NTC_ADC_CHANNEL, raw_value);
+    if (ret != ESP_OK) {
+        *raw_value = 0;
+        return ret;
+    }
+
+    return ESP_OK;
 }
