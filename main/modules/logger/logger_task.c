@@ -23,12 +23,14 @@ static void logger_task(void *arg)
         if (thermal_get_status(&status) == ESP_OK) {
             ESP_LOGI(
                 TAG,
-                "temp=%.2fC filtered=%.2fC setpoint=%.2fC duty=%.2f%% safety=%d",
+                "temp=%.2fC filtered=%.2fC setpoint=%.2fC duty=%.2f%% app=%d safety=%d valid=%d",
                 status.temperature_c,
                 status.filtered_temperature_c,
                 status.setpoint_c,
                 status.duty_percent,
-                status.safety_state);
+                status.app_state,
+                status.safety_state,
+                status.sensor_valid);
         }
 
         vTaskDelay(pdMS_TO_TICKS(THERMAL_LOG_PERIOD_MS));
