@@ -33,6 +33,6 @@ esp_err_t thermal_control_update(
         return ESP_ERR_INVALID_ARG;
     }
 
-    *duty_percent = 0.0f;
-    return ESP_ERR_NOT_SUPPORTED;
+    return pid_update(
+        &s_pid, setpoint_c, temperature_c, period_s, duty_percent);
 }
