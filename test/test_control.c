@@ -2,7 +2,9 @@
 
 #include "main/modules/control/filter.h"
 #include "main/modules/control/pid.h"
+#include "main/modules/safety/safety.h"
 #include "main/modules/sensors/ntc_sensor.h"
+#include "main/modules/thermal/thermal.h"
 
 void test_pid_initializes_and_updates_output(void)
 {
@@ -93,4 +95,14 @@ void test_ntc_rejects_invalid_raw_readings(void)
     TEST_ASSERT_EQUAL(
         ESP_ERR_INVALID_RESPONSE,
         ntc_sensor_convert_raw(4095, &temperature_c));
+}
+
+void test_safety_accepts_temperature_inside_limits(void)
+{
+    safety_state_t state = SAFETY_STATE_SENSOR_ERROR;
+
+    TEST_ASSERT_EQUAL(ESP_OK, safety_init());
+    TEST_ASSERT_EQUAL(
+        ESP_OK, safety_check_temperature(25.0f, true, &state));
+    TEST_ASSERT_EQUAL(SAFETY_STATE_OK, state);
 }
