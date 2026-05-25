@@ -1,5 +1,6 @@
 #include "unity.h"
 
+#include "main/modules/control/filter.h"
 #include "main/modules/control/pid.h"
 
 void test_pid_initializes_and_updates_output(void)
@@ -46,4 +47,16 @@ void test_pid_anti_windup_recovers_after_saturation(void)
     TEST_ASSERT_EQUAL(
         ESP_OK, pid_update(&pid, 0.0f, 0.0f, 0.1f, &output));
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0f, output);
+}
+
+void test_filter_smooths_temperature_sample(void)
+{
+    filter_t filter;
+    float filtered = 0.0f;
+
+    TEST_ASSERT_EQUAL(ESP_OK, filter_init(&filter, 0.5f));
+    TEST_ASSERT_EQUAL(ESP_OK, filter_update(&filter, 10.0f, &filtered));
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 10.0f, filtered);
+    TEST_ASSERT_EQUAL(ESP_OK, filter_update(&filter, 20.0f, &filtered));
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 15.0f, filtered);
 }
