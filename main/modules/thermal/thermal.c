@@ -109,5 +109,13 @@ esp_err_t thermal_execute_cycle(void)
         }
     }
 
+    ret = safety_check_temperature(
+        s_status.filtered_temperature_c,
+        sensor_valid,
+        &s_status.safety_state);
+    if (ret != ESP_OK) {
+        return ret;
+    }
+
     return ESP_OK;
 }
