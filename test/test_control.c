@@ -116,3 +116,13 @@ void test_safety_detects_overtemperature(void)
         ESP_OK, safety_check_temperature(120.0f, true, &state));
     TEST_ASSERT_EQUAL(SAFETY_STATE_OVERTEMPERATURE, state);
 }
+
+void test_safety_detects_invalid_sensor(void)
+{
+    safety_state_t state = SAFETY_STATE_OK;
+
+    TEST_ASSERT_EQUAL(ESP_OK, safety_init());
+    TEST_ASSERT_EQUAL(
+        ESP_OK, safety_check_temperature(25.0f, false, &state));
+    TEST_ASSERT_EQUAL(SAFETY_STATE_SENSOR_ERROR, state);
+}
