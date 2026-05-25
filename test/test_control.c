@@ -60,3 +60,15 @@ void test_filter_smooths_temperature_sample(void)
     TEST_ASSERT_EQUAL(ESP_OK, filter_update(&filter, 20.0f, &filtered));
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 15.0f, filtered);
 }
+
+void test_filter_reset_sets_known_value(void)
+{
+    filter_t filter;
+    float filtered = 0.0f;
+
+    TEST_ASSERT_EQUAL(ESP_OK, filter_init(&filter, 0.5f));
+    TEST_ASSERT_EQUAL(ESP_OK, filter_update(&filter, 50.0f, &filtered));
+    TEST_ASSERT_EQUAL(ESP_OK, filter_reset(&filter, 25.0f));
+    TEST_ASSERT_EQUAL(ESP_OK, filter_update(&filter, 25.0f, &filtered));
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 25.0f, filtered);
+}
