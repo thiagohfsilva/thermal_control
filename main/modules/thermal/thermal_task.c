@@ -4,6 +4,21 @@
 
 #include "esp_err.h"
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
+#include <stdbool.h>
+
+static void thermal_task(void *arg)
+{
+    (void)arg;
+
+    while (true) {
+        (void)thermal_execute_cycle();
+        vTaskDelay(pdMS_TO_TICKS(THERMAL_CONTROL_PERIOD_MS));
+    }
+}
+
 esp_err_t thermal_task_start(void)
 {
     return ESP_ERR_NOT_SUPPORTED;
