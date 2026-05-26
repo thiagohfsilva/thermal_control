@@ -5,6 +5,11 @@
 #include "esp_log.h"
 
 #include "esp_err.h"
+#define PID_KP 27.4f
+#define PID_KI 274.0f
+#define PID_KD 0.69f
+#define PID_OUTPUT_MIN 0.0f
+#define PID_OUTPUT_MAX 100.0f
 
 static pid_controller_t s_pid;
 static const char *TAG = "THERMAL_CTRL";
@@ -12,8 +17,7 @@ static const char *TAG = "THERMAL_CTRL";
 esp_err_t thermal_control_init(void)
 {
     ESP_LOGI(TAG, "Initializing PID controller");
-    return pid_init(&s_pid, 8.0f, 0.2f, 0.0f, THERMAL_PERCENT_MIN,
-                    THERMAL_PERCENT_MAX);
+    return pid_init(&s_pid, PID_KP, PID_KI, PID_KD, PID_OUTPUT_MIN, PID_OUTPUT_MAX);
 }
 
 esp_err_t thermal_control_reset(void)
@@ -38,14 +42,14 @@ esp_err_t thermal_control_update(float setpoint_c, float temperature_c,
         return ret;
     }
 
-    if (*duty_percent < THERMAL_PERCENT_MIN) {
-        ESP_LOGW(TAG, "Duty below min, clamping to %.2f", THERMAL_PERCENT_MIN);
-        *duty_percent = THERMAL_PERCENT_MIN;
+    if (*duty_percent < PID_OUTPUT_MIN) {
+        ESP_LOGW(TAG, "Duty below min, clamping to %.2f", PID_OUTPUT_MIN);
+        *duty_percent = PID_OUTPUT_MIN;
     }
 
-    if (*duty_percent > THERMAL_PERCENT_MAX) {
-        ESP_LOGW(TAG, "Duty above max, clamping to %.2f", THERMAL_PERCENT_MAX);
-        *duty_percent = THERMAL_PERCENT_MAX;
+    if (*duty_percent > PID_OUTPUT_MAX) {
+        ESP_LOGW(TAG, "Duty above max, clamping to %.2f", PID_OUTPUT_MAX);
+        *duty_percent = PID_OUTPUT_MAX;
     }
 
     ESP_LOGI(TAG, "PID output duty: %.2f%%", *duty_percent);

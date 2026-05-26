@@ -2,14 +2,14 @@
 
 Firmware embarcado para controle térmico em malha fechada utilizando FreeRTOS e arquitetura modular.
 
-O projeto é organizado em módulos independentes responsáveis por aquisição de temperatura, controle térmico, segurança, comunicação e serviços auxiliares. Cada módulo possui sua própria inicialização e, quando necessário, cria internamente sua própria task FreeRTOS.
+O projeto é organizado em módulos independentes responsáveis pela aquisição de temperatura, controle térmico, segurança, comunicação e serviços auxiliares. Cada módulo possui sua própria inicialização e, quando necessário, cria internamente sua própria task do FreeRTOS.
 
 ## Objetivos
 
 - Controle de temperatura em malha fechada
 - Arquitetura modular e escalável
 - Separação entre aplicação, controle, sensores e hardware
-- Execução determinística usando FreeRTOS
+- Execução determinística utilizando FreeRTOS
 - Segurança térmica e tratamento de falhas
 - Código legível e padronizado com `clang-format`
 
@@ -17,7 +17,7 @@ O projeto é organizado em módulos independentes responsáveis por aquisição 
 
 ## Arquitetura do Firmware
 
-A arquitetura segue uma organização em camadas, onde módulos de alto nível utilizam serviços dos módulos inferiores.
+A arquitetura segue uma organização em camadas, na qual módulos de alto nível utilizam serviços dos módulos inferiores.
 
 ```text
 Application
@@ -31,7 +31,7 @@ Drivers
 SDK / Hardware
 ```
 
-A ideia é evitar acoplamento excessivo entre módulos e manter responsabilidades bem definidas.
+O objetivo é evitar acoplamento excessivo entre módulos e manter responsabilidades bem definidas.
 
 ---
 
@@ -108,14 +108,14 @@ Exemplo:
 
 - `app/` → regras de negócio e máquina de estados
 - `control/` → algoritmo PID, filtros e controle térmico
-- `drivers/` → abstração do SDK e hardware
+- `drivers/` → abstração do SDK e do hardware
 - `sensors/` → conversão de sinais físicos
 - `thermal/` → gerenciamento do controle térmico
-- `safety/` → proteção térmica e falhas
+- `safety/` → proteção térmica e tratamento de falhas
 - `logger/` → logs e telemetria
 - `communication/` → interfaces externas
 
-### Regra de dependência
+### Regra de Dependência
 
 As dependências devem seguir apenas o fluxo descendente:
 
@@ -156,7 +156,7 @@ Módulos de baixo nível nunca devem depender de módulos de alto nível.
 
 Não existe um gerenciador central de tasks.
 
-Cada módulo é responsável por sua própria inicialização e criação de task, quando necessário.
+Cada módulo é responsável por sua própria inicialização e pela criação de sua task, quando necessário.
 
 Exemplo:
 
@@ -182,15 +182,157 @@ void thermal_init(void)
 O `main()` deve permanecer simples:
 
 ```c
-int main(void)
+void app_main(void)
 {
     app_init();
-
-    vTaskStartScheduler();
-
-    while (1) {
-    }
 }
+```
+
+---
+
+## Como Compilar o Projeto (ESP-IDF + VSCode)
+
+Este projeto utiliza o framework ESP-IDF.
+
+### Pré-requisitos
+
+Instale:
+
+- Visual Studio Code
+- Extensão ESP-IDF para VSCode
+- Toolchain do ESP-IDF
+- Python configurado pelo instalador do ESP-IDF
+
+Após instalar a extensão, configure o ambiente utilizando:
+
+`Ctrl + Shift + P`
+
+e execute:
+
+```text
+ESP-IDF: Configure ESP-IDF extension
+```
+
+Siga o assistente para instalar e configurar automaticamente o ambiente.
+
+### Abrindo o Projeto
+
+1. Abra o VSCode.
+2. Selecione **File → Open Folder**.
+3. Abra a pasta raiz do projeto.
+
+A extensão do ESP-IDF detectará automaticamente a estrutura do projeto.
+
+### Selecionando o Target
+
+No VSCode:
+
+```text
+Ctrl + Shift + P
+```
+
+Execute:
+
+```text
+ESP-IDF: Set Espressif Device Target
+```
+
+Escolha o microcontrolador correto, por exemplo:
+
+```text
+ESP32
+ESP32-S3
+ESP32-C3
+```
+
+### Configuração do Projeto
+
+Caso necessário, abra o menu de configuração:
+
+```text
+ESP-IDF: SDK Configuration editor (menuconfig)
+```
+
+ou via terminal:
+
+```bash
+idf.py menuconfig
+```
+
+### Compilação
+
+Para compilar o projeto:
+
+No terminal:
+
+```bash
+idf.py build
+```
+
+Ou no VSCode:
+
+```text
+ESP-IDF: Build your project
+```
+
+O firmware compilado será gerado no diretório:
+
+```text
+build/
+```
+
+### Gravação na Placa
+
+Conecte a placa via USB e execute:
+
+```bash
+idf.py flash
+```
+
+Ou pelo VSCode:
+
+```text
+ESP-IDF: Flash your project
+```
+
+### Monitor Serial
+
+Para visualizar logs da aplicação:
+
+```bash
+idf.py monitor
+```
+
+Ou:
+
+```bash
+idf.py flash monitor
+```
+
+No VSCode:
+
+```text
+ESP-IDF: Monitor your device
+```
+
+Para sair do monitor serial:
+
+```text
+Ctrl + ]
+```
+
+### Limpeza do Build
+
+Limpeza incremental:
+
+```bash
+idf.py clean
+```
+
+Limpeza completa:
+
+```bash
+idf.py fullclean
 ```
 
 ---
@@ -199,10 +341,8 @@ int main(void)
 
 Tasks devem ser criadas apenas quando fizer sentido funcionalmente.
 
-Exemplos:
-
 | Módulo | Possui Task |
-|--------|-------------|
+|--------|--------------|
 | thermal | Sim |
 | logger | Sim |
 | communication | Sim |
@@ -235,7 +375,7 @@ Output Saturation
 PWM Update
 ```
 
-Exemplo:
+Exemplo simplificado:
 
 ```text
 ADC
@@ -251,7 +391,7 @@ ADC
 
 Este projeto utiliza obrigatoriamente `clang-format`.
 
-Antes de realizar commits, todo código deve ser formatado.
+Antes de realizar commits, todo o código deve ser formatado.
 
 ### Instalação
 
@@ -326,7 +466,7 @@ SortIncludes: Never
 
 ---
 
-## Como formatar o código
+## Como Formatar o Código
 
 Formatar um arquivo:
 
@@ -334,7 +474,7 @@ Formatar um arquivo:
 clang-format -i main/modules/thermal/thermal.c
 ```
 
-Formatar múltiplos arquivos:
+Formatar todos os arquivos `.c` e `.h`, incluindo subpastas:
 
 ```bash
 find . \( -name "*.c" -o -name "*.h" \) \
@@ -382,9 +522,29 @@ void thermal_init(void)
 
 ## Futuras Melhorias
 
+- Separar a task de aquisição/filtragem da task de controle. Idealmente, a aquisição deve ser pelo menos 100 vezes mais rápida que a execução do controle.
+- Estimar corretamente a frequência de corte do filtro IIR e utilizar parâmetros coerentes no firmware.
+- Verificar se os limites mínimo e máximo de temperatura para entrada no modo seguro fazem sentido.
+- Validar o comportamento térmico do sistema, analisar oscilações e estimar a variância do sinal para verificar a efetividade do filtro.
+- Confirmar se o ADC foi configurado corretamente em 12 bits.
+- Melhorar o acumulador integral do PID. Como o processo é lento (~48 s), existe possibilidade de acúmulo excessivo (*integral windup*).
+- Realizar calibração do sensor utilizando gelo (~0 °C) e água em ebulição (~100 °C) com termômetro certificado.
+- Implementar medição de corrente na carga, permitindo entrada no modo seguro quando:
+
+```text
+duty_cycle > 0 && current == 0
+```
+
+- Revisar cada módulo com calma e validar se a arquitetura e implementação fazem sentido.
+- Ainda existe muito trabalho antes de o sistema se tornar um produto real.
+
+## Outras Ideias
+
 - Persistência de parâmetros
-- Auto tuning PID
+- Auto-tuning do PID
 - Interface serial de configuração
-- Logging estruturado
+- Logging dividido e melhor estruturado
 - Testes unitários
 - Watchdog e diagnóstico
+- Registro de falhas com causa raiz
+- Sinalização via USB da deterioração do sistema e solicitação de manutenção preventiva
