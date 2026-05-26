@@ -1,9 +1,9 @@
 {
   "C_Cpp.intelliSenseEngine": "default",
   "idf.openOcdConfigs": [
-    "board/esp32-wrover-kit-3.3v.cfg"
+    "board/esp32-bridge.cfg"
   ],
-  "idf.port": "/dev/ttyACM0",
+  "idf.port": "/dev/ttyUSB0",
   "idf.currentSetup": "/home/kaleno/.espressif/v5.2/esp-idf",
   "idf.customExtraVars": {
     "IDF_TARGET": "esp32"
@@ -14,5 +14,5 @@
     "--query-driver=**",
     "--compile-commands-dir=/home/kaleno/git/example/thermal_control/build"
   ],
-  "idf.flashType": "JTAG"
+  "idf.flashType": "UART"
 }

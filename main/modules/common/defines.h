@@ -1,3 +1,7 @@
+/**
+ * @file defines.h
+ * @brief Definições e macros auxiliares do sistema de controle térmico.
+ */
 #pragma once
 
 #define THERMAL_PERCENT_MIN (0.0f)

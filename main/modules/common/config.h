@@ -1,3 +1,7 @@
+/**
+ * @file config.h
+ * @brief Definições de configuração do sistema de controle térmico.
+ */
 #pragma once
 
 #include "driver/adc_types_legacy.h"
